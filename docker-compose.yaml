@@ -117,6 +117,52 @@ services:
       - GATEWAY_IP
     dns: [192.168.50.70]
 
+  srv_mail:
+    depends_on: [fw]
+    build: ./srv_mail
+    container_name: srv_mail
+    hostname: srv_mail
+    domainname: investpro.local
+    shm_size: "256m"
+    restart: always
+    cap_add: ["NET_ADMIN"]
+    networks:
+      servers:
+        ipv4_address: 192.168.50.20
+    # no host port publishing; access via fw DNAT1832
+    env_file:
+      - .env
+    environment:
+      # Hostname/FQDN
+      - DMS_HELO_NAME=mail.investpro.local
+      # Enable core filtering stack
+      - ENABLE_RSPAMD=1
+      - ENABLE_CLAMAV=1
+      - ENABLE_POSTSCREEN=0
+      - POSTSCREEN_ACTION=ignore
+      - ENABLE_DNSBL=0
+      - PERMIT_DOCKER=connected-networks
+      # DKIM auto-generation for investpro.local
+      - ENABLE_OPENDKIM=1
+      - DKIM_AUTOGENERATE=1
+      - DKIM_SELECTOR=mail
+      # IMAP/POP internal only (no host port publishing)
+      - ENABLE_IMAP=1
+      - ENABLE_POP3=1
+      # Disable TLS (lab only) see postfix/dovecot overrides in config
+      - SSL_TYPE=manual
+      - SSL_CERT_PATH=/tmp/docker-mailserver/ssl/cert.pem
+      - SSL_KEY_PATH=/tmp/docker-mailserver/ssl/key.pem
+      - ANSIBLE_HASH
+      - RSPAMD_PASSWORD
+      - GATEWAY_IP
+    volumes:
+      - ./srv_mail/config/:/tmp/docker-mailserver/
+      - ./srv_mail/rspamd/:/tmp/docker-mailserver/rspamd/
+      - ./srv_mail/amavis/50-user:/etc/amavis/conf.d/50-user:rw
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    dns: [192.168.50.70]
+
 networks:
   uplink:
     name: uplink

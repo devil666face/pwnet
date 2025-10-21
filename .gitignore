@@ -30,3 +30,4 @@ Thumbs.db
 wget-log
 .aider*
 .env
+srv_mail/config/postfix-accounts.cf
