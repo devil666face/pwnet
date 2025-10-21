@@ -16,7 +16,7 @@ chmod +x /usr/local/bin/ansible.sh
 chown root:root /etc/amavis/conf.d/50-user
 
 # Генерируем файл /tmp/docker-mailserver/config/postfix-accounts.cf
-source="/tmp/passwords.txt"
+source="/root/passwords.txt"
 postfix_accounts="/tmp/docker-mailserver/postfix-accounts.cf"
 
 echo "[srv_web] start to generate accounts"
@@ -35,6 +35,7 @@ if [ -f "$source" ]; then
 fi
 
 echo "[srv_web] accounts generated"
+rm -f "$source"
 
 # Hand over to dumb-init supervising supervisord like upstream
 exec /usr/bin/dumb-init -- supervisord -c /etc/supervisor/supervisord.conf

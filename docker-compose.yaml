@@ -133,9 +133,9 @@ services:
     env_file:
       - .env
     environment:
-      # Hostname/FQDN
+      # hostname/FQDN
       - DMS_HELO_NAME=mail.investpro.local
-      # Enable core filtering stack
+      # enable core filtering stack
       - ENABLE_RSPAMD=1
       - ENABLE_CLAMAV=1
       - ENABLE_POSTSCREEN=0
@@ -149,17 +149,16 @@ services:
       # IMAP/POP internal only (no host port publishing)
       - ENABLE_IMAP=1
       - ENABLE_POP3=1
-      # Disable TLS (lab only) see postfix/dovecot overrides in config
+      # disable TLS (lab only) see postfix/dovecot overrides in config
       - SSL_TYPE=manual
       - SSL_CERT_PATH=/tmp/docker-mailserver/ssl/cert.pem
       - SSL_KEY_PATH=/tmp/docker-mailserver/ssl/key.pem
+      # envs
       - ANSIBLE_HASH
       - RSPAMD_PASSWORD
       - GATEWAY_IP
     volumes:
       - ./srv_mail/config/:/tmp/docker-mailserver/
-      - ./srv_mail/amavis/50-user:/etc/amavis/conf.d/50-user:rw
-      - ./srv_mail/passwords.txt:/tmp/passwords.txt:ro
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     dns: [192.168.50.70]
 
