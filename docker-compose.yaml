@@ -92,6 +92,31 @@ services:
       - USER_HASH
     dns: [192.168.50.70]
 
+  srv_fs:
+    hostname: srv_fs
+    depends_on: [fw]
+    build: ./srv_fs
+    container_name: srv_fs
+    cap_add: ["NET_ADMIN"]
+    restart: always
+    # user: root
+    networks:
+      servers:
+        ipv4_address: 192.168.50.30
+    volumes:
+      - ./samba/share:/share
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+      - ./srv_fs/etc/samba/smb.conf:/etc/samba/smb.conf:rw
+    env_file:
+      - .env
+    environment:
+      - ANSIBLE_HASH
+      - SAMBA_USER
+      - SAMBA_PASSWORD
+      - SAMBA_SHARE_NAME
+      - GATEWAY_IP
+    dns: [192.168.50.70]
+
 networks:
   uplink:
     name: uplink
