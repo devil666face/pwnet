@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Контакты — ООО «Всем по дарктстору»</title>
+  <title>Контакты — InvestPRO</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -20,12 +20,13 @@
       box-sizing: border-box
     }
 
-    html,
-    body {
-      height: 100%
+    html, body {
+      height: 100%;
+      min-height: 100%;
     }
 
     body {
+      min-height: 100vh;
       margin: 0;
       font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Noto Sans", sans-serif;
       color: var(--text);
@@ -33,6 +34,7 @@
         radial-gradient(1200px 600px at 80% -10%, rgba(34, 211, 238, 0.10), transparent 60%),
         radial-gradient(900px 500px at 10% -20%, rgba(249, 115, 22, 0.10), transparent 55%),
         linear-gradient(180deg, var(--bg), var(--bg-soft));
+      /* убираем flex, чтобы футер не прилипал к середине */
     }
 
     .container {
@@ -108,8 +110,10 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 16px
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      max-width: 100%;
+      word-break: break-word;
     }
 
     .card {
@@ -117,6 +121,8 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 14px;
       transition: transform .2s ease, box-shadow .2s ease;
+      min-width: 0;
+      word-break: break-word;
     }
 
     .card:hover {
@@ -147,7 +153,10 @@
       font-weight: 700;
       padding: 10px 14px;
       border-radius: 10px;
-      text-decoration: none
+      text-decoration: none;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+      white-space: pre-line;
     }
 
     .back {
@@ -160,11 +169,14 @@
     }
 
     footer {
-      color: var(--muted);
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-      margin-top: 32px;
-      padding: 16px 0 30px;
-      font-size: 14px
+      color: inherit;
+      border: none;
+      margin: 0;
+      padding: 0;
+      font-size: 14px;
+      background: none;
+      box-shadow: none;
+      text-align: left;
     }
 
     @media (max-width: 860px) {
@@ -178,7 +190,7 @@
 <body>
   <div class="container">
     <header>
-      <div class="brand">ООО «Всем по дарктстору»</div>
+      <div class="brand">InvestPRO</div>
       <nav>
         <a href="/index.html">Главная</a>
         <a href="/contacts.html" aria-current="page">Контакты</a>
@@ -186,54 +198,56 @@
     </header>
 
     <section class="section">
-      <h1>Связаться с командой дарксторов</h1>
-      <p class="lead">Мы сопровождаем запуск региональных дарксторов на всех этапах — от предпроектной аналитики до
-        операционной поддержки. Напишите нам, если хотите получить предложение, обсудить интеграции или запросить
-        демонстрацию DarkStore OS.</p>
+      <h1>Связаться с InvestPRO</h1>
+      <p class="lead">InvestPRO — инвестиционная компания, предоставляющая современные решения для частных и корпоративных клиентов. Напишите нам, чтобы получить консультацию, обсудить инвестиционные возможности или запросить индивидуальное предложение.</p>
       <div class="info">
-        <span><strong>Юридическое лицо:</strong> ООО «Всем по дарктстору»</span>
-        <span><strong>Адрес проекта:</strong> г. Москва, ул. Ленинская Слобода, 26, технопарк «Портал», офис 412</span>
-        <span><strong>Телефон для встреч:</strong> +7 (495) 555-12-34 (с 10:00 до 19:00 мск)</span>
+        <span><strong>Юридическое лицо:</strong> InvestPRO</span>
+        <span><strong>Адрес офиса:</strong> г. Москва, ул. Ленинская Слобода, 26, технопарк «Портал», офис 412</span>
+        <span><strong>Телефон:</strong> +7 (495) 555-12-34 (с 10:00 до 19:00 мск)</span>
         <span><strong>Общий e-mail:</strong> <a href="mailto:hello@investpro.local"
             style="color:inherit">hello@investpro.local</a></span>
       </div>
 
-      <div class="grid" role="list">
+      <div class="grid" role="list" style="grid-template-columns: 1fr;">
+
         <article class="card" role="listitem">
           <div class="body">
-            <h3 class="title">Боярина Анна Михайловна</h3>
-            <p class="desc">Технический директор, отвечает за DarkStore OS и интеграции</p>
-            <a class="btn" href="mailto:b.anna@investpro.local">b.anna@investpro.local</a>
+            <h3 class="title"><span style="word-break: break-all;">boss@investpro.local</span></h3>
+            <p class="desc">Валерий Котов — директор по развитию</p>
+            <a class="btn" href="mailto:boss@investpro.local"><span style="word-break: break-all;">boss@investpro.local</span></a>
           </div>
         </article>
+
         <article class="card" role="listitem">
           <div class="body">
-            <h3 class="title">Петрович Артём Дмитриевич</h3>
-            <p class="desc">Руководитель инфраструктуры: площадки, сети, безопасность</p>
-            <a class="btn" href="mailto:petrovich@investpro.local">petrovich@investpro.local</a>
+            <h3 class="title"><span style="word-break: break-all;">user1@investpro.local</span></h3>
+            <p class="desc">Мария Лебедева — менеджер проектов</p>
+            <a class="btn" href="mailto:user1@investpro.local"><span style="word-break: break-all;">user1@investpro.local</span></a>
           </div>
         </article>
+
         <article class="card" role="listitem">
           <div class="body">
-            <h3 class="title">Трастов Евгений Тарасович</h3>
-            <p class="desc">Менеджер по операционному запуску и стандартам качества</p>
-            <a class="btn" href="mailto:trust@investpro.local">trust@investpro.local</a>
+            <h3 class="title"><span style="word-break: break-all;">user2@investpro.local</span></h3>
+            <p class="desc">Игорь Соловьёв — инженер по интеграциям</p>
+            <a class="btn" href="mailto:user2@investpro.local"><span style="word-break: break-all;">user2@investpro.local</span></a>
           </div>
         </article>
+
         <article class="card" role="listitem">
           <div class="body">
-            <h3 class="title">Боссовна Ирина Ильясовна</h3>
-            <p class="desc">Генеральный директор, стратегические партнёрства и SLA</p>
-            <a class="btn" href="mailto:boss@investpro.local">boss@investpro.local</a>
+            <h3 class="title"><span style="word-break: break-all;">admin@investpro.local</span></h3>
+            <p class="desc">Светлана Миронова — системный администратор</p>
+            <a class="btn" href="mailto:admin@investpro.local"><span style="word-break: break-all;">admin@investpro.local</span></a>
           </div>
         </article>
+
       </div>
     </section>
 
-    <footer>
+    <footer style="width: 100%; background: none; border-top: 1px solid rgba(255,255,255,0.06); margin-top: 32px; padding: 16px 0 30px; font-size: 14px; color: var(--muted); text-align: left;">
       <a class="back" href="/index.html">← На главную</a>
     </footer>
   </div>
 </body>
-
 </html>
