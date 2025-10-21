@@ -10,10 +10,10 @@ What’s included
 
 Users
 
-- petrovich@investpro.local
 - boss@investpro.local
-- evgen@investpro.local
-- brown.anna@investpro.local
+- user1@investpro.local
+- user2@investpro.local
+- admin@investpro.local
 
 Passwords
 

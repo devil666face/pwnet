@@ -158,8 +158,8 @@ services:
       - GATEWAY_IP
     volumes:
       - ./srv_mail/config/:/tmp/docker-mailserver/
-      - ./srv_mail/rspamd/:/tmp/docker-mailserver/rspamd/
       - ./srv_mail/amavis/50-user:/etc/amavis/conf.d/50-user:rw
+      - ./srv_mail/passwords.txt:/tmp/passwords.txt:ro
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     dns: [192.168.50.70]
 

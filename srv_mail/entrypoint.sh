@@ -15,23 +15,26 @@ chmod +x /usr/local/bin/ansible.sh
 # Fix amavis permissions
 chown root:root /etc/amavis/conf.d/50-user
 
-# Генерируем файл /tmp/docker-mailserver/config/postfix-accounts.cf из /tmp/docker-mailserver/secrets/generated-passwords.txt, если он существует
+# Генерируем файл /tmp/docker-mailserver/config/postfix-accounts.cf
+source="/tmp/passwords.txt"
+postfix_accounts="/tmp/docker-mailserver/postfix-accounts.cf"
 
-SRC="/tmp/docker-mailserver/secrets/generated-passwords.txt"
-DST="/tmp/docker-mailserver/postfix-accounts.cf"
+echo "[srv_web] start to generate accounts"
 
-if [ -f "$SRC" ]; then
+if [ -f "$source" ]; then
 	# Ожидается формат: user:password (plain)
 	# Для каждого пользователя генерируем строку user:{SHA512-CRYPT}hash
-	>"$DST"
+	true >"$postfix_accounts"
 	while IFS=: read -r user pass; do
 		# Генерируем хэш пароля
 		hash=$(doveadm pw -s SHA512-CRYPT -p "$pass")
-		echo "$user|$hash" >>"$DST"
-	done <"$SRC"
-	chown root:root "$DST"
-	chmod 600 "$DST"
+		echo "$user|$hash" >>"$postfix_accounts"
+	done <"$source"
+	chown root:root "$postfix_accounts"
+	chmod 600 "$postfix_accounts"
 fi
+
+echo "[srv_web] accounts generated"
 
 # Hand over to dumb-init supervising supervisord like upstream
 exec /usr/bin/dumb-init -- supervisord -c /etc/supervisor/supervisord.conf
