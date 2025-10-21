@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#Скрипт выполняет первичную конфиуграцию SSHD и создает пользователя для ansible
+# Скрипт выполняет первичную конфиуграцию SSHD и создает пользователя для ansible
 set -euo pipefail
 
 # SSH setup (avoid noisy errors if config dir missing)
 mkdir -p /etc/ssh /run/sshd
 if [ ! -f /etc/ssh/sshd_config ]; then
-  cat > /etc/ssh/sshd_config <<'EOF'
+	cat >/etc/ssh/sshd_config <<'EOF'
 Port 22
 Protocol 2
 HostKey /etc/ssh/ssh_host_rsa_key
@@ -24,10 +24,10 @@ ssh-keygen -A >/dev/null 2>&1 || true
 
 # Add ansible user
 if ! id -u ansible >/dev/null 2>&1; then
-  useradd -m -s /bin/bash -p "${ANSIBLE_HASH}" ansible || true
+	useradd -m -s /bin/bash -p "${ANSIBLE_HASH}" ansible || true
 fi
 
-echo 'ansible ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/91-ansible
+echo 'ansible ALL=(ALL) NOPASSWD: ALL' >/etc/sudoers.d/91-ansible
 chmod 0440 /etc/sudoers.d/91-ansible
 
 mkdir -p /run/sshd

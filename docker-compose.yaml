@@ -1,0 +1,62 @@
+services:
+  nat:
+    hostname: nat
+    build: ./nat
+    container_name: nat
+    cap_add: ["NET_ADMIN"]
+    restart: always
+    networks:
+      uplink:
+      nat:
+        ipv4_address: 192.168.90.254
+    volumes:
+      - ./nat/iptables.rules:/etc/iptables/rules.v4:ro
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports:
+      - "127.0.0.1:80:80"
+      - "127.0.0.1:1832:1832"
+
+  fw:
+    hostname: fw
+    depends_on:
+      - nat
+    build: ./fw
+    container_name: fw
+    privileged: true
+    cap_add: ["NET_ADMIN"]
+    restart: always
+    sysctls:
+      net.ipv4.ip_forward: 1
+    networks:
+      nat:
+        ipv4_address: 192.168.90.2
+    volumes:
+      - ./fw/nftables.conf:/etc/nftables.conf:rw
+      # Из-за flush ruleset ломается внутренний DNS-сервис 127.0.0.11 контейнера, поэтому надо вручную назначить корпоративный DNS-сервер
+      - ./fw/etc/resolv.conf:/etc/resolv.conf:ro
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    env_file:
+      - .env
+    environment:
+      - ANSIBLE_HASH
+      # - GATEWAY_IP
+
+networks:
+  uplink:
+    name: uplink
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/24
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.name: br-uplink
+  nat:
+    driver: bridge
+    name: nat
+    ipam:
+      config:
+        - subnet: 192.168.90.0/24
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.name: br-nat

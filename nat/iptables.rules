@@ -3,11 +3,11 @@
 :POSTROUTING ACCEPT [0:0]
 
 # DNAT внешний->fw: весь трафик, пришедший на IP прокси на uplink
--A PREROUTING ! -s 192.168.99.2 -j DNAT --to-destination 192.168.99.2
+-A PREROUTING ! -s 192.168.90.2 -j DNAT --to-destination 192.168.90.2
 
 # все пакеты адресованные на fw задаем source ip на наш NAT
--A POSTROUTING -o eth0 -d 192.168.99.2 -j SNAT --to-source 192.168.99.254
--A POSTROUTING -o eth1 -d 192.168.99.2 -j SNAT --to-source 192.168.99.254
+-A POSTROUTING -o eth0 -d 192.168.90.2 -j SNAT --to-source 192.168.90.254
+-A POSTROUTING -o eth1 -d 192.168.90.2 -j SNAT --to-source 192.168.90.254
 
 COMMIT
 
