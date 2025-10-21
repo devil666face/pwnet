@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ООО «Всем по дарктстору» — запуск региональных дарксторов под ключ</title>
+  <meta name="description"
+    content="ООО «Всем по дарктстору» проектирует и запускает региональные дарксторы для розничных сетей: аудит, IT-платформа, логистика и операционная поддержка." />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --bg-soft: #111827;
+      --card: #0b1220;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --brand: #f97316;
+      --accent: #22d3ee;
+      --ok: #10b981;
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, "Noto Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 600px at 80% -10%, rgba(34, 211, 238, 0.10), transparent 60%),
+        radial-gradient(900px 500px at 10% -20%, rgba(249, 115, 22, 0.10), transparent 55%),
+        linear-gradient(180deg, var(--bg), var(--bg-soft));
+    }
+
+    .container {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding: 24px
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 0
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 700;
+      letter-spacing: .3px
+    }
+
+    .brand svg {
+      width: 34px;
+      height: 34px
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600
+    }
+
+    nav a:hover {
+      color: var(--text)
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 28px;
+      align-items: center;
+      padding: 18px 0 8px
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.15;
+      margin: 0 0 10px
+    }
+
+    .hero p {
+      color: var(--muted);
+      margin: 0 0 18px
+    }
+
+    .actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap
+    }
+
+    .primary {
+      background: linear-gradient(90deg, var(--brand), #fb923c);
+      color: #0b0f1a;
+      font-weight: 800;
+      padding: 12px 18px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .ghost {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: var(--text);
+      text-decoration: none
+    }
+
+    .badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap
+    }
+
+    .badge {
+      border: 1px solid #1f2937;
+      color: #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 999px;
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.02)
+    }
+
+    .badge svg {
+      width: 18px;
+      height: 18px
+    }
+
+    .heroArt {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      max-width: 520px;
+      place-self: center;
+    }
+
+    .glow {
+      position: absolute;
+      inset: 10% 0 0;
+      background: radial-gradient(closest-side, rgba(34, 211, 238, .25), transparent 60%);
+      filter: blur(40px) opacity(.9)
+    }
+
+    .ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 255, 255, .06);
+      animation: spin 26s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(1turn)
+      }
+    }
+
+    .section {
+      margin: 26px 0 10px
+    }
+
+    .section h2 {
+      font-size: clamp(22px, 2.4vw, 28px);
+      margin: 0 0 14px
+    }
+
+    .section p.lead {
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 0 18px
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, .25)
+    }
+
+    .card .body {
+      padding: 18px 18px 16px
+    }
+
+    .title {
+      font-weight: 700;
+      margin: 0 0 8px
+    }
+
+    .desc {
+      color: var(--muted);
+      font-size: 15px;
+      margin: 0
+    }
+
+    .meta {
+      color: var(--accent);
+      font-weight: 600;
+      font-size: 13px;
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .steps {
+      counter-reset: step
+    }
+
+    .steps .card {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start
+    }
+
+    .steps .step-num {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(34, 211, 238, .15);
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: var(--accent)
+    }
+
+    .steps .body {
+      padding: 16px 12px 12px 0
+    }
+
+    .cta {
+      background: linear-gradient(120deg, rgba(34, 211, 238, .12), rgba(249, 115, 22, .08));
+      border: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 18px;
+      padding: 26px;
+      margin: 36px 0 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    .cta h2 {
+      margin: 0 0 10px
+    }
+
+    .cta p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 520px
+    }
+
+    footer {
+      color: var(--muted);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      margin-top: 26px;
+      padding: 16px 0 30px;
+      font-size: 14px
+    }
+
+    @media (max-width: 860px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .cta {
+        flex-direction: column;
+        align-items: flex-start
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <div class="brand" aria-label="ООО «Всем по дарктстору»">
+        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 46c4 6 20 12 28 12s24-6 28-12V18H4v28Z" fill="rgba(34,211,238,.16)" />
+          <path d="M8 24h48" stroke="rgba(249,115,22,.55)" stroke-width="3" />
+          <path d="M20 10l28 12" stroke="#f97316" stroke-width="3" stroke-linecap="round" />
+          <path d="M14 14l34 16" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" />
+        </svg>
+        <span>ООО «Всем по дарктстору»</span>
+      </div>
+      <nav aria-label="Главная навигация">
+        <a href="#services">Услуги</a>
+        <a href="#benefits">Преимущества</a>
+        <a href="#process">Как мы работаем</a>
+        <a href="/contacts.html">Контакты</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <h1>Запускаем региональные дарксторы для вашего ритейла</h1>
+        <p>ООО «Всем по дарктстору» проектирует и вводит в эксплуатацию дарксторы под ключ: от выбора локаций и
+          IT-архитектуры до логистики, стандартов работы и передачи команды. Мы помогаем ритейлерам быстро
+          масштабировать доставку «последней мили» в регионах.</p>
+        <div class="actions">
+          <a class="primary" href="/contacts.html">Получить консультацию</a>
+          <a class="ghost" href="#process">План запуска</a>
+        </div>
+        <div class="badges" role="list">
+          <span class="badge" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 12h16M7 12c0-3.5 2.5-6 5-6s5 2.5 5 6-2.5 6-5 6-5-2.5-5-6Z" stroke="#22d3ee"
+                stroke-width="1.6" />
+            </svg>
+            SLA 12 недель на запуск
+          </span>
+          <span class="badge" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="m5 12 4 4L19 6" stroke="#10b981" stroke-width="1.6" stroke-linecap="round" />
+            </svg>
+            30+ реализованных площадок
+          </span>
+          <span class="badge" role="listitem">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3 7h14l4 4-4 4H3V7Z" stroke="#f97316" stroke-width="1.6" />
+            </svg>
+            IT-платформа DarkStore OS
+          </span>
+        </div>
+      </div>
+      <div class="heroArt" aria-hidden="true">
+        <div class="glow"></div>
+        <div class="ring"></div>
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#22d3ee" stop-opacity=".8" />
+              <stop offset="1" stop-color="#f97316" stop-opacity=".8" />
+            </linearGradient>
+          </defs>
+          <ellipse cx="120" cy="200" rx="92" ry="26" fill="rgba(0,0,0,.35)" />
+          <rect x="44" y="78" width="152" height="96" rx="18" fill="url(#grad)" opacity=".18" />
+          <path d="M52 92h136v64H52Z" fill="rgba(14,165,233,.2)" />
+          <path d="M60 88h120v-28H60z" fill="rgba(249,115,22,.4)" />
+          <path d="M60 60h20v-16H60z" fill="#22d3ee" />
+          <path d="M90 60h20v-24H90z" fill="#0ea5e9" />
+          <path d="M120 60h20v-12h-20z" fill="#38bdf8" />
+          <path d="M150 60h20v-20h-20z" fill="#f97316" />
+          <path d="M70 132h76M70 148h48M70 116h100" stroke="rgba(255,255,255,.5)" stroke-width="4"
+            stroke-linecap="round" />
+        </svg>
+      </div>
+    </section>
+
+    <section class="section" id="services">
+      <h2>Услуги для быстрого запуска даркстора</h2>
+      <p class="lead">Мы закрываем полный цикл — от исследования спроса до оперативного управления. Каждый пакет можно
+        подключать отдельно либо в рамках проекта «под ключ».</p>
+      <div class="grid" role="list">
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Стратегия и аналитика</h3>
+            <p class="desc">Рассчитываем ёмкость рынка, подбираем локации, моделируем P&amp;L и формируем дорожную карту
+              масштабирования сети.</p>
+            <span class="meta">Аудит 360° и бизнес-кейс</span>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Инженерия и IT</h3>
+            <p class="desc">Проектируем склад, внедряем DarkStore OS, настраиваем интеграции с ERP, курьерскими и
+              маркетинговыми системами.</p>
+            <span class="meta">WMS, OMS, аналитика</span>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Операционный запуск</h3>
+            <p class="desc">Набираем персонал, обучаем по чек-листам, выстраиваем процессы сборки и контроля качества,
+              подготавливаем документацию.</p>
+            <span class="meta">Стандарты и процессные карты</span>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Логистика и поддержка</h3>
+            <p class="desc">Организуем «последнюю милю», SLA по доставке, мониторинг показателей, а также сопровождение
+              после ввода площадки.</p>
+            <span class="meta">24/7 NOC и KPI-дашборды</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="benefits">
+      <h2>Почему ритейлеры выбирают нас</h2>
+      <div class="grid" role="list">
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Гарантированные KPI</h3>
+            <p class="desc">Фиксируем SLA по срокам запуска, сервису и unit-экономике. Прописываем метрики до заключения
+              контракта.</p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Собственная платформа</h3>
+            <p class="desc">DarkStore OS объединяет склад, курьеров и витрину. Ускоряет набор заказов и снижает ошибки
+              сборки до 0,4%.</p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Команда с опытом сети 30+ городов</h3>
+            <p class="desc">Инженеры, продуктовые менеджеры и операционный штаб, прошедшие путь от MVP до федерального
+              масштабирования.</p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="body">
+            <h3 class="title">Прозрачность и сопровождение</h3>
+            <p class="desc">Еженедельные отчёты, совместные ревью показателей и поддержка после запуска: от оптимизации
+              до планов роста.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section steps" id="process">
+      <h2>Путь проекта «под ключ»</h2>
+      <p class="lead">От первой встречи до выхода на операционную окупаемость обычно проходит 12–16 недель. Вот как
+        выглядит дорожная карта.</p>
+      <div class="grid" role="list">
+        <article class="card" role="listitem">
+          <div class="step-num">1</div>
+          <div class="body">
+            <h3 class="title">Диагностика и проект</h3>
+            <p class="desc">Интервью с командой, анализ потоков, финмодель, утверждение KPI и бюджета.</p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="step-num">2</div>
+          <div class="body">
+            <h3 class="title">Инфраструктура и IT</h3>
+            <p class="desc">Планировка склада, закупка, настройка DarkStore OS, интеграции и автоматизация процессов.
+            </p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="step-num">3</div>
+          <div class="body">
+            <h3 class="title">Запуск операций</h3>
+            <p class="desc">Подбор и обучение команды, тестовые заказы, стабилизация сервиса, выход на плановые SLA.</p>
+          </div>
+        </article>
+        <article class="card" role="listitem">
+          <div class="step-num">4</div>
+          <div class="body">
+            <h3 class="title">Масштабирование</h3>
+            <p class="desc">Передача процессов, настройка мониторинга, поддержка запуска дополнительных площадок.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div>
+        <h2>Готовы запустить даркстор в вашем регионе?</h2>
+        <p>Расскажите о своих целевых городах и текущей логистике — подготовим предложение в течение трёх рабочих дней.
+        </p>
+      </div>
+      <a class="primary" href="mailto:boss@darkstore.local">Связаться с директором</a>
+    </section>
+
+    <footer>
+      ООО «Всем по дарктстору», 2025 · Решения для региональных дарксторов · <a href="/contacts.html"
+        style="color:inherit">Контакты</a>
+    </footer>
+  </div>
+</body>
+
+</html>
