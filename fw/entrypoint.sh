@@ -7,7 +7,7 @@ sysctl -w net.ipv4.ip_forward=1 >/dev/null 2>&1 || true
 # Prepare PATH
 echo 'export PATH=/usr/sbin:/sbin:$PATH' >/etc/profile.d/00-sbin.sh
 
-echo "[fw] Renaming interfaces by subnet..."
+echo "[fw] renaming interfaces by subnet..."
 # Collect non-loopback IPv4 interfaces
 while read -r line; do
 	dev=$(echo "$line" | awk '{print $2}')
@@ -19,10 +19,10 @@ while read -r line; do
 	new=""
 	case "$subnet" in
 	192.168.90.0/24) new="eth_nat" ;;
-	192.168.101.0/24) new="eth_users" ;;
-	192.168.102.0/24) new="eth_dmz" ;;
-	192.168.103.0/24) new="eth_servers" ;;
-	192.168.104.0/24) new="eth_admin" ;;
+	192.168.50.0/24) new="eth_servers" ;;
+	# 192.168.101.0/24) new="eth_users" ;;
+	# 192.168.102.0/24) new="eth_dmz" ;;
+	# 192.168.104.0/24) new="eth_admin" ;;
 	esac
 	[ -z "$new" ] && continue
 	[ "$dev" = "$new" ] && continue

@@ -39,7 +39,27 @@ services:
       - .env
     environment:
       - ANSIBLE_HASH
-      # - GATEWAY_IP
+
+  srv_dns:
+    hostname: srv_dns
+    depends_on: [fw]
+    build: ./srv_dns
+    container_name: srv_dns
+    cap_add: ["NET_ADMIN"]
+    restart: always
+    networks:
+      servers:
+        ipv4_address: 192.168.50.70
+    volumes:
+      - ./srv_dns/Corefile:/etc/coredns/Corefile:ro
+      - ./srv_dns/investpro.local.db:/etc/coredns/investpro.local.db:ro
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    environment:
+      - GATEWAY_IP
+      - ANSIBLE_HASH
+    expose:
+      - "53"
+      - "53/udp"
 
 networks:
   uplink:
@@ -60,3 +80,13 @@ networks:
     driver_opts:
       com.docker.network.bridge.enable_icc: "true"
       com.docker.network.bridge.name: br-nat
+
+  servers:
+    driver: bridge
+    name: servers
+    ipam:
+      config:
+        - subnet: 192.168.50.0/24
+    driver_opts:
+      com.docker.network.bridge.enable_icc: "true"
+      com.docker.network.bridge.name: br-servers

@@ -6,4 +6,4 @@ RUN apk add --no-cache shadow nftables iproute2 iptables openssh openssh-server 
 COPY /entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
-CMD ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
