@@ -14,7 +14,7 @@ services:
     extra_hosts: ["host.docker.internal:host-gateway"]
     ports:
       - "127.0.0.1:80:80"
-      - "127.0.0.1:1832:1832"
+      # - "127.0.0.1:1832:1832"
 
   fw:
     hostname: fw
@@ -34,13 +34,12 @@ services:
         ipv4_address: 192.168.50.254
     volumes:
       - ./fw/nftables.conf:/etc/nftables.conf:rw
-      # Из-за flush ruleset ломается внутренний DNS-сервис 127.0.0.11 контейнера, поэтому надо вручную назначить корпоративный DNS-сервер
+      # Адрес srv_dns
       - ./fw/etc/resolv.conf:/etc/resolv.conf:ro
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
-    env_file:
-      - .env
+    # Решение: используем только переменную ANSIBLE_HASH через environment, не подключая весь .env файл.
     environment:
-      - ANSIBLE_HASH
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
 
   srv_dns:
     hostname: srv_dns
@@ -56,11 +55,9 @@ services:
       - ./srv_dns/Corefile:/etc/coredns/Corefile:ro
       - ./srv_dns/investpro.local.db:/etc/coredns/investpro.local.db:ro
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
-    env_file:
-      - .env
     environment:
-      - GATEWAY_IP
-      - ANSIBLE_HASH
+      - GATEWAY_IP=${GATEWAY_IP}
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
     expose:
       - "53"
       - "53/udp"
@@ -84,12 +81,10 @@ services:
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     command: >
       sh -c "exec /bin/sh /entrypoint.sh"
-    env_file:
-      - .env
     environment:
-      - GATEWAY_IP
-      - ANSIBLE_HASH
-      - USER_HASH
+      - GATEWAY_IP=${GATEWAY_IP}
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+      - USER_HASH=${USER_HASH}
     dns: [192.168.50.70]
 
   srv_fs:
@@ -107,14 +102,12 @@ services:
       - ./samba/share:/share
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
       - ./srv_fs/etc/samba/smb.conf:/etc/samba/smb.conf:rw
-    env_file:
-      - .env
     environment:
-      - ANSIBLE_HASH
-      - SAMBA_USER
-      - SAMBA_PASSWORD
-      - SAMBA_SHARE_NAME
-      - GATEWAY_IP
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+      - SAMBA_USER=${SAMBA_USER}
+      - SAMBA_PASSWORD=${SAMBA_PASSWORD}
+      - SAMBA_SHARE_NAME=${SAMBA_SHARE_NAME}
+      - GATEWAY_IP=${GATEWAY_IP}
     dns: [192.168.50.70]
 
   srv_mail:
@@ -130,8 +123,6 @@ services:
       servers:
         ipv4_address: 192.168.50.20
     # no host port publishing; access via fw DNAT1832
-    env_file:
-      - .env
     environment:
       # hostname/FQDN
       - DMS_HELO_NAME=mail.investpro.local
@@ -154,9 +145,9 @@ services:
       - SSL_CERT_PATH=/tmp/docker-mailserver/ssl/cert.pem
       - SSL_KEY_PATH=/tmp/docker-mailserver/ssl/key.pem
       # envs
-      - ANSIBLE_HASH
-      - RSPAMD_PASSWORD
-      - GATEWAY_IP
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+      - RSPAMD_PASSWORD=${RSPAMD_PASSWORD}
+      - GATEWAY_IP=${GATEWAY_IP}
     volumes:
       - ./srv_mail/config/:/tmp/docker-mailserver/
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
