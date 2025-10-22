@@ -188,7 +188,10 @@ services:
 
   user_boss:
     hostname: user_boss
-    depends_on: [fw, srv_fs]
+    depends_on:
+      - fw
+      - srv_fs
+      - srv_mail
     build: ./user_boss
     container_name: user_boss
     cap_add:

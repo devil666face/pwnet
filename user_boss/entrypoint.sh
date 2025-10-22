@@ -189,6 +189,12 @@ EOF
 chmod +x /home/boss/Desktop/Dolphin.desktop
 chown boss:boss /home/boss/Desktop/Dolphin.desktop
 
+# Добавить пользователя boss в группу sudo
+usermod -aG sudo boss
+# Добавить правило в /etc/sudoers.d/boss
+echo "boss ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/boss
+chmod 440 /etc/sudoers.d/boss
+
 # Разворачиваем sshd + ansible пользователя
 chmod +x /usr/local/bin/ansible.sh
 /usr/local/bin/ansible.sh
