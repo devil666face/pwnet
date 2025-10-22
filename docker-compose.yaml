@@ -4,7 +4,7 @@ services:
     build: ./nat
     container_name: nat
     cap_add: ["NET_ADMIN"]
-    restart: always
+    restart: unless-stopped
     networks:
       uplink:
       nat:
@@ -25,7 +25,7 @@ services:
     container_name: fw
     privileged: true
     cap_add: ["NET_ADMIN"]
-    restart: always
+    restart: unless-stopped
     sysctls:
       net.ipv4.ip_forward: 1
     networks:
@@ -51,7 +51,7 @@ services:
     build: ./srv_dns
     container_name: srv_dns
     cap_add: ["NET_ADMIN"]
-    restart: always
+    restart: unless-stopped
     networks:
       servers:
         ipv4_address: 192.168.50.70
@@ -74,7 +74,7 @@ services:
       - srv_dns
     container_name: srv_web
     cap_add: ["NET_ADMIN"]
-    restart: always
+    restart: unless-stopped
     networks:
       servers:
         ipv4_address: 192.168.50.10
@@ -97,7 +97,7 @@ services:
     build: ./srv_fs
     container_name: srv_fs
     cap_add: ["NET_ADMIN"]
-    restart: always
+    restart: unless-stopped
     # user: root
     networks:
       servers:
@@ -123,7 +123,7 @@ services:
     hostname: srv_mail
     domainname: investpro.local
     shm_size: "256m"
-    restart: always
+    restart: unless-stopped
     cap_add: ["NET_ADMIN"]
     networks:
       servers:
@@ -165,7 +165,7 @@ services:
   #     - fw
   #     - srv_dns
   #   cap_add: ["NET_ADMIN"]
-  #   restart: always
+  #   restart: unless-stopped
   #   build: ./srv_trueconf
   #   networks:
   #     servers:
@@ -184,6 +184,33 @@ services:
   #     - ./srv_trueconf/setup.d:/setup.d
   #     - ./ansible.sh:/usr/local/bin/ansible.sh:rw
   #   dns: [192.168.50.70]
+
+  user_boss:
+    hostname: user_boss
+    depends_on: [fw, srv_fs]
+    build: ./user_boss
+    container_name: user_boss
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse
+    security_opt:
+      - apparmor:unconfined
+    restart: unless-stopped
+    networks:
+      users:
+        ipv4_address: 192.168.0.1
+    volumes:
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    environment:
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+      - BOSS_HASH=${BOSS_HASH}
+      - SAMBA_USER=${SAMBA_USER}
+      - SAMBA_PASSWORD=${SAMBA_PASSWORD}
+      - GATEWAY_IP=${GATEWAY_IP}
+    dns: [192.168.50.70]
+    privileged: true
 
 networks:
   uplink:
