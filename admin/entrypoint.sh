@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -eu
 
-useradd -m -s /bin/bash -p "${BOSS_HASH}" boss || true
+useradd -m -s /bin/bash -p "${ADMIN_HASH}" admin || true
 
 # Adjust default route via firewall
 ip route del default || true
@@ -12,15 +12,15 @@ set -euo pipefail
 # Ensure APT repositories use HTTPS (replace any http:// with https://)
 sudo sed -i 's|http://|https://|g' /etc/apt/sources.list
 
-# Prepare XRDP session for boss
-mkdir -p /home/boss
-printf '%s\n%s\n' "setxkbmap -layout us,ru -option grp:alt_shift_toggle" "exec startplasma-x11" >/home/boss/.xsession
-chown -R boss:boss /home/boss
+# Prepare XRDP session for admin
+mkdir -p /home/admin
+printf '%s\n%s\n' "setxkbmap -layout us,ru -option grp:alt_shift_toggle" "exec startplasma-x11" >/home/admin/.xsession
+chown -R admin:admin /home/admin
 
 # Ensure XDG base directories and default user-places file for Dolphin/Plasma
-mkdir -p /home/boss/.local/share /home/boss/.config /home/boss/.cache
-if [ ! -s /home/boss/.local/share/user-places.xbel ]; then
-	cat >/home/boss/.local/share/user-places.xbel <<'EOF'
+mkdir -p /home/admin/.local/share /home/admin/.config /home/admin/.cache
+if [ ! -s /home/admin/.local/share/user-places.xbel ]; then
+	cat >/home/admin/.local/share/user-places.xbel <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <xbel version="1.0">
   <folder folded="no"><title>Places</title></folder>
@@ -28,7 +28,7 @@ if [ ! -s /home/boss/.local/share/user-places.xbel ]; then
 </xbel>
 EOF
 fi
-chown -R boss:boss /home/boss/.local /home/boss/.config /home/boss/.cache
+chown -R admin:admin /home/admin/.local /home/admin/.config /home/admin/.cache
 
 # Harden xrdp.ini: keep listener at 3389 in [Globals], ensure [Xorg] uses port=-1
 awk 'BEGIN{in_g=0} \
@@ -53,8 +53,8 @@ mkdir -p /run/xrdp || true
 rm -f /run/xrdp/xrdp.pid /run/xrdp/xrdp-sesman.pid /var/run/xrdp/xrdp.pid /var/run/xrdp/xrdp-sesman.pid || true
 
 # Preconfigure Thunderbird for user 'petrovich' and add desktop launchers
-MAIL_USER="boss"
-MAIL_ADDR=${MAIL_ADDR:-boss@investpro.local}
+MAIL_USER="admin"
+MAIL_ADDR=${MAIL_ADDR:-admin@investpro.local}
 MAIL_NAME=${MAIL_NAME:-Boyarina Anna}
 MAIL_IMAP_HOST=${MAIL_IMAP_HOST:-192.168.50.20}
 MAIL_IMAP_PORT=${MAIL_IMAP_PORT:-143}
@@ -159,9 +159,9 @@ chown -R $MAIL_USER:$MAIL_USER "$TB_BASE" "$DESK_DIR"
 # Note: we do not auto-launch Thunderbird headlessly here to avoid blocking startup.
 # The Desktop entry runs Thunderbird with the explicit profile path, so installs.ini isn't required.
 
-# Restrict XRDP logins to group 'rdpusers' only and add boss to it
+# Restrict XRDP logins to group 'rdpusers' only and add admin to it
 getent group rdpusers >/dev/null || groupadd rdpusers
-usermod -aG rdpusers 'boss' || true
+usermod -aG rdpusers 'admin' || true
 if ! grep -q 'pam_succeed_if.so.*ingroup rdpusers' /etc/pam.d/xrdp-sesman 2>/dev/null; then
 	sed -i '1i auth required pam_succeed_if.so user ingroup rdpusers' /etc/pam.d/xrdp-sesman || true
 fi
@@ -170,12 +170,12 @@ fi
 sleep 5
 # Mount Samba share on srv_samba
 if ! mount -t cifs //192.168.50.30/share /mnt/share \
-	-o username="${SAMBA_USER}",password="${SAMBA_PASSWORD}",vers=3.0,iocharset=utf8,uid=$(id -u boss),gid=$(id -g boss); then
+	-o username="${SAMBA_USER}",password="${SAMBA_PASSWORD}",vers=3.0,iocharset=utf8,uid=$(id -u admin),gid=$(id -g admin); then
 	echo 'WARNING: failed to mount //192.168.50.30/share, continuing without mapped drive' >&2
 fi
 
 # Dolphin link on Desktop
-cat >/home/boss/Desktop/Dolphin.desktop <<'EOF'
+cat >/home/admin/Desktop/Dolphin.desktop <<'EOF'
 [Desktop Entry]
 Type=Application
 Version=1.0
@@ -186,14 +186,8 @@ Icon=system-file-manager
 Terminal=false
 Categories=System;FileTools;FileManager;
 EOF
-chmod +x /home/boss/Desktop/Dolphin.desktop
-chown boss:boss /home/boss/Desktop/Dolphin.desktop
-
-# Добавить пользователя boss в группу sudo
-usermod -aG sudo boss
-# Добавить правило в /etc/sudoers.d/boss
-echo "boss ALL=(ALL) NOPASSWD:ALL" >/etc/sudoers.d/boss
-chmod 440 /etc/sudoers.d/boss
+chmod +x /home/admin/Desktop/Dolphin.desktop
+chown admin:admin /home/admin/Desktop/Dolphin.desktop
 
 # Разворачиваем sshd + ansible пользователя
 chmod +x /usr/local/bin/ansible.sh

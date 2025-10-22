@@ -17,6 +17,7 @@ services:
       - "127.0.0.1:25:25" # srv_mail
       - "127.0.0.1:143:143" # srv_mail
       - "127.0.0.1:3389:3389" # user_boss
+      - "127.0.0.1:13389:13389" # admin
 
   fw:
     hostname: fw
@@ -211,6 +212,36 @@ services:
       - GATEWAY_IP=192.168.0.254
       - ANSIBLE_HASH=${ANSIBLE_HASH}
       - BOSS_HASH=${BOSS_HASH}
+      - SAMBA_USER=${SAMBA_USER}
+      - SAMBA_PASSWORD=${SAMBA_PASSWORD}
+    dns: [192.168.50.70]
+    privileged: true
+
+  admin:
+    hostname: admin
+    depends_on:
+      - fw
+      - srv_fs
+      - srv_mail
+    build: ./admin
+    container_name: admin
+    cap_add:
+      - NET_ADMIN
+      - SYS_ADMIN
+    devices:
+      - /dev/fuse
+    security_opt:
+      - apparmor:unconfined
+    restart: unless-stopped
+    networks:
+      users:
+        ipv4_address: 192.168.0.50
+    volumes:
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    environment:
+      - GATEWAY_IP=192.168.0.254
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+      - ADMIN_HASH=${ADMIN_HASH}
       - SAMBA_USER=${SAMBA_USER}
       - SAMBA_PASSWORD=${SAMBA_PASSWORD}
     dns: [192.168.50.70]
