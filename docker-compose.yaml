@@ -13,9 +13,10 @@ services:
       - ./nat/iptables.rules:/etc/iptables/rules.v4:ro
     extra_hosts: ["host.docker.internal:host-gateway"]
     ports:
-      - "127.0.0.1:80:80"
-      - "127.0.0.1:25:25"
-      - "127.0.0.1:143:143"
+      - "127.0.0.1:80:80" # srv_web
+      - "127.0.0.1:25:25" # srv_mail
+      - "127.0.0.1:143:143" # srv_mail
+      - "127.0.0.1:3389:3389" # user_boss
 
   fw:
     hostname: fw
@@ -60,7 +61,7 @@ services:
       - ./srv_dns/investpro.local.db:/etc/coredns/investpro.local.db:ro
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     environment:
-      - GATEWAY_IP=${GATEWAY_IP}
+      - GATEWAY_IP=192.168.50.254
       - ANSIBLE_HASH=${ANSIBLE_HASH}
     expose:
       - "53"
@@ -85,7 +86,7 @@ services:
       - ./srv_web/log.txt:/log.txt:ro
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     environment:
-      - GATEWAY_IP=${GATEWAY_IP}
+      - GATEWAY_IP=192.168.50.254
       - ANSIBLE_HASH=${ANSIBLE_HASH}
       - USER_HASH=${USER_HASH}
     dns: [192.168.50.70]
@@ -107,11 +108,11 @@ services:
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
       - ./srv_fs/etc/samba/smb.conf:/etc/samba/smb.conf:rw
     environment:
+      - GATEWAY_IP=192.168.50.254
       - ANSIBLE_HASH=${ANSIBLE_HASH}
       - SAMBA_USER=${SAMBA_USER}
       - SAMBA_PASSWORD=${SAMBA_PASSWORD}
       - SAMBA_SHARE_NAME=${SAMBA_SHARE_NAME}
-      - GATEWAY_IP=${GATEWAY_IP}
     dns: [192.168.50.70]
 
   srv_mail:
@@ -151,9 +152,9 @@ services:
       - SSL_CERT_PATH=/tmp/docker-mailserver/ssl/cert.pem
       - SSL_KEY_PATH=/tmp/docker-mailserver/ssl/key.pem
       # envs
+      - GATEWAY_IP=192.168.50.254
       - ANSIBLE_HASH=${ANSIBLE_HASH}
       - RSPAMD_PASSWORD=${RSPAMD_PASSWORD}
-      - GATEWAY_IP=${GATEWAY_IP}
     volumes:
       - ./srv_mail/config/:/tmp/docker-mailserver/
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
@@ -173,7 +174,7 @@ services:
   #   environment:
   #     - ADMIN_USER=tc_admin
   #     - ADMIN_PASSWORD=12345
-  #     - GATEWAY_IP=${GATEWAY_IP}
+  #     - GATEWAY_IP=192.168.50.254
   #     - ANSIBLE_HASH=${ANSIBLE_HASH}
   #   ports:
   #     - "8000:80"
@@ -200,15 +201,15 @@ services:
     restart: unless-stopped
     networks:
       users:
-        ipv4_address: 192.168.0.1
+        ipv4_address: 192.168.0.2
     volumes:
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     environment:
+      - GATEWAY_IP=192.168.0.254
       - ANSIBLE_HASH=${ANSIBLE_HASH}
       - BOSS_HASH=${BOSS_HASH}
       - SAMBA_USER=${SAMBA_USER}
       - SAMBA_PASSWORD=${SAMBA_PASSWORD}
-      - GATEWAY_IP=${GATEWAY_IP}
     dns: [192.168.50.70]
     privileged: true
 
