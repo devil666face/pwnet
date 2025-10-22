@@ -64,7 +64,9 @@ services:
 
   srv_web:
     hostname: srv_web
-    depends_on: [fw]
+    depends_on:
+      - fw
+      - srv_dns
     image: alpine:3.20
     container_name: srv_web
     cap_add: ["NET_ADMIN"]
