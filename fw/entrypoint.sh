@@ -20,9 +20,7 @@ while read -r line; do
 	case "$subnet" in
 	192.168.90.0/24) new="eth_nat" ;;
 	192.168.50.0/24) new="eth_servers" ;;
-	# 192.168.101.0/24) new="eth_users" ;;
-	# 192.168.102.0/24) new="eth_dmz" ;;
-	# 192.168.104.0/24) new="eth_admin" ;;
+	192.168.0.0/24) new="eth_users" ;;
 	esac
 	[ -z "$new" ] && continue
 	[ "$dev" = "$new" ] && continue

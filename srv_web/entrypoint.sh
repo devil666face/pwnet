@@ -1,16 +1,9 @@
 #!/bin/sh
 set -eu
 
-echo "[entrypoint.sh] starting..."
-
-GATEWAY_IP="${GATEWAY_IP}"
-
 # Network route first (before apk fetches)
 ip route del default 2>/dev/null || true
-ip route add default via "$GATEWAY_IP" || true
-
-# Packages
-apk add bash nginx openssh iproute2 sudo openssl shadow nano
+ip route add default via "${GATEWAY_IP}" || true
 
 useradd -m -s /bin/bash -p "${USER_HASH}" user || true
 
@@ -26,4 +19,4 @@ chmod +x /usr/local/bin/ansible.sh
 nginx -g 'daemon off;' &
 # nginx -s reload
 
-exec tail -f /dev/null
+sleep infinity
