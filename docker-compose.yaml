@@ -44,7 +44,8 @@ services:
 
   srv_dns:
     hostname: srv_dns
-    depends_on: [fw]
+    depends_on:
+      - fw
     build: ./srv_dns
     container_name: srv_dns
     cap_add: ["NET_ADMIN"]
@@ -92,7 +93,8 @@ services:
 
   srv_fs:
     hostname: srv_fs
-    depends_on: [fw]
+    depends_on:
+      - fw
     build: ./srv_fs
     container_name: srv_fs
     cap_add: ["NET_ADMIN"]
@@ -114,7 +116,9 @@ services:
     dns: [192.168.50.70]
 
   srv_mail:
-    depends_on: [fw]
+    depends_on:
+      - fw
+      - srv_dns
     build: ./srv_mail
     container_name: srv_mail
     hostname: srv_mail
@@ -155,6 +159,32 @@ services:
       - ./srv_mail/config/:/tmp/docker-mailserver/
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     dns: [192.168.50.70]
+
+  # srv_trueconf:
+  #   container_name: srv_trueconf
+  #   depends_on:
+  #     - fw
+  #     - srv_dns
+  #   cap_add: ["NET_ADMIN"]
+  #   restart: always
+  #   build: ./srv_trueconf
+  #   networks:
+  #     servers:
+  #       ipv4_address: 192.168.50.50
+  #   environment:
+  #     - ADMIN_USER=tc_admin
+  #     - ADMIN_PASSWORD=12345
+  #     - GATEWAY_IP=${GATEWAY_IP}
+  #     - ANSIBLE_HASH=${ANSIBLE_HASH}
+  #   ports:
+  #     - "8000:80"
+  #     - "443:443"
+  #     - "4307:4307"
+  #   volumes:
+  #     - ./srv_trueconf/lib:/opt/trueconf/server/var/lib
+  #     - ./srv_trueconf/setup.d:/setup.d
+  #     - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+  #   dns: [192.168.50.70]
 
 networks:
   uplink:
