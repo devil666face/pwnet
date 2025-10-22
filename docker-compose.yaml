@@ -14,7 +14,8 @@ services:
     extra_hosts: ["host.docker.internal:host-gateway"]
     ports:
       - "127.0.0.1:80:80"
-      # - "127.0.0.1:1832:1832"
+      - "127.0.0.1:25:25"
+      - "127.0.0.1:143:143"
 
   fw:
     hostname: fw
@@ -33,9 +34,9 @@ services:
       servers:
         ipv4_address: 192.168.50.254
     volumes:
-      - ./fw/nftables.conf:/etc/nftables.conf:rw
       # Адрес srv_dns
       - ./fw/etc/resolv.conf:/etc/resolv.conf:ro
+      - ./fw/nftables.conf:/etc/nftables.conf:rw
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     # Решение: используем только переменную ANSIBLE_HASH через environment, не подключая весь .env файл.
     environment:
