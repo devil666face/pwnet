@@ -89,7 +89,7 @@ services:
     environment:
       - GATEWAY_IP=192.168.50.254
       - ANSIBLE_HASH=${ANSIBLE_HASH}
-      - USER_HASH=${USER_HASH}
+      - USER1_HASH=${USER1_HASH}
     dns: [192.168.50.70]
 
   srv_fs:
@@ -216,6 +216,44 @@ services:
       - SAMBA_PASSWORD=${SAMBA_PASSWORD}
     dns: [192.168.50.70]
     privileged: true
+
+  user_user1:
+    hostname: user_user1
+    depends_on: [fw]
+    build: ./empty
+    container_name: user_user1
+    cap_add: ["NET_ADMIN"]
+    restart: unless-stopped
+    networks:
+      users:
+        ipv4_address: 192.168.0.10
+    environment:
+      - GATEWAY_IP=192.168.0.254
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+      - USER1_HASH=${USER1_HASH}
+      - USERNAME=user1
+    volumes:
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    dns: [192.168.50.70]
+
+  user_user2:
+    hostname: user_user2
+    depends_on: [fw]
+    build: ./empty
+    container_name: user_user2
+    cap_add: ["NET_ADMIN"]
+    restart: unless-stopped
+    networks:
+      users:
+        ipv4_address: 192.168.0.20
+    environment:
+      - GATEWAY_IP=192.168.0.254
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+      - USER2_HASH=${USER2_HASH}
+      - USERNAME=user2
+    volumes:
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    dns: [192.168.50.70]
 
   admin:
     hostname: admin
