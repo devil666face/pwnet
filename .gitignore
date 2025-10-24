@@ -1,3 +1,4 @@
 .aider*
 srv_mail/config/postfix-accounts.cf
 .srv_trueconf/lib
+srv_trueconf/lib

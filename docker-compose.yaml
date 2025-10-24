@@ -16,8 +16,10 @@ services:
       - "127.0.0.1:80:80" # srv_web
       - "127.0.0.1:25:25" # srv_mail
       - "127.0.0.1:143:143" # srv_mail
-      - "127.0.0.1:3389:3389" # user_boss
-      - "127.0.0.1:13389:13389" # admin
+      - "127.0.0.1:13389:13389" # user_boss
+      - "127.0.0.1:23389:23389" # admin
+      - "127.0.0.1:2222:2222" # admin
+      - "127.0.0.1:8000:8000" # srv_trueconf
 
   fw:
     hostname: fw
@@ -42,7 +44,6 @@ services:
       - ./fw/etc/resolv.conf:/etc/resolv.conf:ro
       - ./fw/nftables.conf:/etc/nftables.conf:rw
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
-    # Решение: используем только переменную ANSIBLE_HASH через environment, не подключая весь .env файл.
     environment:
       - ANSIBLE_HASH=${ANSIBLE_HASH}
 
@@ -84,7 +85,7 @@ services:
       - ./www:/usr/share/nginx/html:ro
       - ./srv_web/log.conf:/etc/nginx/http.d/zz-server.conf:rw
       - ./srv_web/nginx.conf:/etc/nginx/nginx.conf:rw
-      - ./srv_web/log.txt:/log.txt:ro
+      - ./srv_web/access.log:/access.log:ro
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     environment:
       - GATEWAY_IP=192.168.50.254
@@ -161,31 +162,27 @@ services:
       - ./ansible.sh:/usr/local/bin/ansible.sh:rw
     dns: [192.168.50.70]
 
-  # srv_trueconf:
-  #   container_name: srv_trueconf
-  #   depends_on:
-  #     - fw
-  #     - srv_dns
-  #   cap_add: ["NET_ADMIN"]
-  #   restart: unless-stopped
-  #   build: ./srv_trueconf
-  #   networks:
-  #     servers:
-  #       ipv4_address: 192.168.50.50
-  #   environment:
-  #     - ADMIN_USER=tc_admin
-  #     - ADMIN_PASSWORD=12345
-  #     - GATEWAY_IP=192.168.50.254
-  #     - ANSIBLE_HASH=${ANSIBLE_HASH}
-  #   ports:
-  #     - "8000:80"
-  #     - "443:443"
-  #     - "4307:4307"
-  #   volumes:
-  #     - ./srv_trueconf/lib:/opt/trueconf/server/var/lib
-  #     - ./srv_trueconf/setup.d:/setup.d
-  #     - ./ansible.sh:/usr/local/bin/ansible.sh:rw
-  #   dns: [192.168.50.70]
+  srv_trueconf:
+    container_name: srv_trueconf
+    depends_on:
+      - fw
+      - srv_dns
+    cap_add: ["NET_ADMIN"]
+    restart: unless-stopped
+    build: ./srv_trueconf
+    networks:
+      servers:
+        ipv4_address: 192.168.50.50
+    environment:
+      - ADMIN_USER=${TRUECONF_USER}
+      - ADMIN_PASSWORD=${TRUECONF_PASSWORD}
+      - GATEWAY_IP=192.168.50.254
+      - ANSIBLE_HASH=${ANSIBLE_HASH}
+    volumes:
+      # - ./srv_trueconf/lib:/opt/trueconf/server/var/lib
+      - ./srv_trueconf/setup.d:/setup.d
+      - ./ansible.sh:/usr/local/bin/ansible.sh:rw
+    dns: [192.168.50.70]
 
   user_boss:
     hostname: user_boss
