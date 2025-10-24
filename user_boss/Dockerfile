@@ -74,10 +74,14 @@ RUN awk 'BEGIN{in_g=0} \
 # Ensure the listening port is correctly set only in [Globals]; keep [Xorg] port=-1
 EXPOSE 3389
 
-# Run entrypoint.sh
+COPY tools/email_watcher.py /opt/tools/email_watcher.py
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
 RUN chmod +x /usr/local/bin/entrypoint.sh
+RUN chmod +x /opt/tools/email_watcher.py
 
 RUN mkdir /mnt/share
+
+RUN pip install pyzipper
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

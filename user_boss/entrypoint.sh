@@ -166,8 +166,36 @@ if ! grep -q 'pam_succeed_if.so.*ingroup rdpusers' /etc/pam.d/xrdp-sesman 2>/dev
 	sed -i '1i auth required pam_succeed_if.so user ingroup rdpusers' /etc/pam.d/xrdp-sesman || true
 fi
 
-# Подождем пока заведется srv_samba, чтобы диски подключились
-sleep 5
+# Set up cron job to poll mailbox every ~15 seconds (loop x4 each minute)
+# Use a user-writable lock file to avoid Permission denied on /var/run
+LOCK_DIR=/home/boss/.local/run
+mkdir -p "$LOCK_DIR" && chown -R boss:boss "$LOCK_DIR" || true
+cat >/usr/local/bin/run_email_watcher.sh <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+LOCKFILE="/home/boss/.local/run/email_watcher.lock"
+exec /usr/bin/flock -n "$LOCKFILE" bash -c '
+  for i in 1 2 3 4; do
+    /usr/bin/python3 /opt/tools/email_watcher.py >> /var/log/email_watcher.log 2>&1 || true
+    sleep 15
+  done
+'
+EOF
+chmod 0755 /usr/local/bin/run_email_watcher.sh
+
+cat >/etc/cron.d/email_watcher <<'CRON'
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+HOME=/home/boss
+* * * * * boss /usr/local/bin/run_email_watcher.sh
+CRON
+chmod 0644 /etc/cron.d/email_watcher
+tr -d '\r' </etc/cron.d/email_watcher >/etc/cron.d/email_watcher.tmp && mv /etc/cron.d/email_watcher.tmp /etc/cron.d/email_watcher
+
+touch /var/log/email_watcher.log && chown boss:boss /var/log/email_watcher.log || true
+service cron restart || service cron start || true
+
 # Mount Samba share on srv_samba
 if ! mount -t cifs //192.168.50.30/share /mnt/share \
 	-o username="${SAMBA_USER}",password="${SAMBA_PASSWORD}",vers=3.0,iocharset=utf8,uid=$(id -u boss),gid=$(id -g boss); then
